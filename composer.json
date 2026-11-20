@@ -1,0 +1,26 @@
+{
+    "name": "moy45/fitbase",
+    "description": "API REST con FlightPHP",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "process-timeout": 0
+    },
+    "scripts": {
+        "start": "PHP_CLI_SERVER_WORKERS=8 php -S 0.0.0.0:4107 -t public public/index.php",
+        "dev": "PHP_CLI_SERVER_WORKERS=8 php -S localhost:4107 -t public public/index.php",
+        "kill": "fuser -k 4107/tcp 2>/dev/null || true"
+    },
+    "require": {
+        "flightphp/core": "^3.19",
+        "vlucas/phpdotenv": "^5.7",
+        "paragonie/paseto": "^3.5",
+        "predis/predis": "^3.7",
+        "phpmailer/phpmailer": "^7.1",
+        "stripe/stripe-php": "^22.1"
+    }
+}

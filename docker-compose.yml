@@ -1,0 +1,64 @@
+services:
+  app:
+    build: .
+    container_name: fitbase_app
+    ports:
+      - "${APP_PORT:-4107}:4107"
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    environment:
+      # Tienen prioridad sobre .env (Dotenv es inmutable)
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-fitbase}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_SSLMODE: disable
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  db:
+    # PostgreSQL 17 + PostGIS 3 (para coordenadas/geografía)
+    image: postgis/postgis:17-3.5
+    container_name: fitbase_db
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-fitbase}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}   # superusuario: puede CREATE EXTENSION
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${DB_EXTERNAL_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Solo se ejecutan la PRIMERA vez (volumen vacío), en orden alfabético
+      - ./docker/postgres/00_extensions.sql:/docker-entrypoint-initdb.d/00_extensions.sql:ro
+      - ./sql/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./sql/02_seeds.sql:/docker-entrypoint-initdb.d/02_seeds.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-fitbase}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: fitbase_redis
+    ports:
+      - "${REDIS_EXTERNAL_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
+  redisdata:
+  vendor:
