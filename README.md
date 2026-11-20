@@ -26,16 +26,23 @@ fitbase/
 
 ---
 
-## Frontend
+## Repositorios del ecosistema Fitbase
 
-El cliente web de Fitbase vive en un repositorio aparte: **[Moisessantos45/fitbase_frontend](https://github.com/Moisessantos45/fitbase_frontend)**.
+| Componente | Descripción | Repositorio |
+| :--- | :--- | :--- |
+| Frontend web | Cliente web | [Moisessantos45/fitbase_frontend](https://github.com/Moisessantos45/fitbase_frontend) |
+| Backend (Go) | Versión alternativa del backend en Go | [Moisessantos45/fitbase_backend](https://github.com/Moisessantos45/fitbase_backend) |
+| App móvil | Versión móvil | [Moisessantos45/fitbase](https://github.com/Moisessantos45/fitbase) |
 
 ```bash
 git clone https://github.com/Moisessantos45/fitbase_frontend.git
+git clone https://github.com/Moisessantos45/fitbase_backend.git
+git clone https://github.com/Moisessantos45/fitbase.git
 ```
 
-- Apunta el frontend a esta API (`http://localhost:4107`).
-- Su URL (por defecto `http://localhost:3000`) debe estar en `HOST_URL_DEV` / `HOST_URL_PROD` del `.env` para que CORS lo permita.
+- Este repositorio es el backend en **PHP (FlightPHP)** y comparte el esquema de BD (`sql/`) con la versión en Go.
+- Apunta el frontend o la app móvil a esta API (`http://localhost:4107`).
+- La URL del frontend (por defecto `http://localhost:3000`) debe estar en `HOST_URL_DEV` / `HOST_URL_PROD` del `.env` para que CORS la permita.
 
 ---
 
